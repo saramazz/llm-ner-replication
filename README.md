@@ -26,7 +26,7 @@ corpus itself is not included (access requires a PhysioNet credential, see
 | `baselines/medcat_baseline.py`    | MedCAT baseline (overlap + strict F1, concept accuracy) |
 | `baselines/quickumls_baseline.py` | QuickUMLS P/R curve (Jaccard threshold sweep) |
 | `figures/figures_v2.py`           | Reproduce Figure 2 (self-contained, no data needed) |
-| `data/predictions/`               | Saved GPT-4o zero-shot predictions (run evaluation without re-querying GPT) |
+| `data/predictions/`               | GPT-4o zero-shot predictions — available on request from the authors (clinical text is derived from MIMIC-II and cannot be redistributed publicly; requires PhysioNet DUA) |
 | `data/README.md`                  | Data-access instructions and expected file formats |
 | `requirements.txt`                | Pinned dependencies |
 
@@ -151,8 +151,11 @@ All entity texts are lowercased before encoding to guard against this in any cas
 
 ## GPT-4o annotation
 
-The zero-shot GPT-4o predictions used in the paper are provided under
-`data/predictions/`, so the evaluation runs without querying the API. They were
+The zero-shot GPT-4o predictions used in the paper are available on request
+from the authors (`data/predictions/`). They are not included in this public
+repository because the annotation files contain clinical text derived from MIMIC-II,
+which cannot be redistributed (PhysioNet data use agreement). Researchers who hold
+a valid PhysioNet credential may contact the corresponding author. They were
 generated with GPT-4o (the exact API snapshot is not recorded in the code), using a
 prompt that wraps disorder mentions in `[[...]]` brackets. **Re-running GPT-4o will not
 reproduce identical outputs** because of model updates; the evaluation scripts work with
