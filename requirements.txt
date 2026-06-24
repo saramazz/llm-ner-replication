@@ -12,9 +12,9 @@ transformers>=4.35
 torch>=2.0
 
 # MedCAT baseline
-# Pin 1.16.x: the model pack (umls_sm_wstatus_2021_aa.zip) is a v1 pack
+# Pin 1.10.x: the model pack (umls_sm_pt2ch_533bab5115c6c2d6.zip) is a v1 pack
 # and is not compatible with MedCAT 2.x
-medcat==1.16.12
+medcat==1.10.3
 
 # QuickUMLS baseline (system-level install may be needed for LevelDB)
 quickumls

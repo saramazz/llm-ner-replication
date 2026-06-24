@@ -55,7 +55,7 @@ DISORDER_TUIS = {
 # Paper operating points for verification
 VERIFY_POINTS = {
     0.70: {"P": 0.4279, "F1": 0.5242},
-    0.80: {"P": 0.5344, "F1": 0.6413},
+    0.80: {"P": 0.6338, "F1": 0.6412},
 }
 VERIFY_TOL = 0.003
 

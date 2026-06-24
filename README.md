@@ -87,14 +87,14 @@ Three evaluation modes are reported:
 
 ```bash
 python baselines/medcat_baseline.py \
-    --model_pack data/medcat_model/umls_sm_wstatus_2021_aa.zip \
+    --model_pack data/medcat_model/umls_sm_pt2ch_533bab5115c6c2d6.zip \
     --docs data/en_docs.json \
     --gold data/en_gold.json \
     --out  medcat_results.json
 ```
 
-The model pack (`umls_sm_wstatus_2021_aa.zip`) was obtained from the MedCAT
-model zoo. It requires `medcat==1.16.x` (not 2.x).
+The model pack (`umls_sm_pt2ch_533bab5115c6c2d6.zip`) was obtained from the MedCAT
+model zoo. It requires `medcat==1.10.x` (the paper results were produced with `medcat==1.10.3`; not compatible with 2.x).
 
 ---
 
@@ -115,7 +115,7 @@ python baselines/quickumls_baseline.py \
 
 Paper operating points (English, 131 test docs):
 - thr=0.70: P=0.428, R=0.677, F1=0.524
-- thr=0.80: P=0.534, R=0.759, F1=0.641
+- thr=0.80: P=0.634, R=0.649, F1=0.641
 
 ---
 
@@ -142,10 +142,11 @@ before encoding to defend against similar issues in any cased model.
 ## GPT-4o annotation
 
 The zero-shot GPT-4o predictions used in the paper were generated with the
-`gpt-4o-2024-05-13` snapshot. The prompt instructs the model to wrap disorder
-mentions with `[[...]]` brackets. **Re-running GPT-4o will not reproduce identical
-outputs** due to model updates; the evaluation scripts work with any output
-following the `[[entity]]` annotation convention.
+`gpt-4o` model. The exact API snapshot cannot be confirmed from the code (no
+date-pinned model string was logged at annotation time). The prompt instructs
+the model to wrap disorder mentions with `[[...]]` brackets. **Re-running GPT-4o
+will not reproduce identical outputs** due to model updates; the evaluation
+scripts work with any output following the `[[entity]]` annotation convention.
 
 The annotation prompt is included in the paper (Appendix A).
 
