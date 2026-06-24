@@ -1,0 +1,26 @@
+# Core
+pandas>=1.5
+numpy>=1.24
+
+# NER / BEL evaluation
+difflib      # stdlib — no install needed
+scipy>=1.10  # for any statistical tests
+
+# BEL embedding models
+sentence-transformers>=2.2
+transformers>=4.35
+torch>=2.0
+
+# MedCAT baseline
+# Pin 1.16.x: the model pack (umls_sm_wstatus_2021_aa.zip) is a v1 pack
+# and is not compatible with MedCAT 2.x
+medcat==1.16.12
+
+# QuickUMLS baseline (system-level install may be needed for LevelDB)
+quickumls
+
+# Figure generation
+matplotlib>=3.7
+
+# Optional: GPU memory profiling
+psutil
