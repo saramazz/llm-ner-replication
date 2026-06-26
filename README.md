@@ -4,15 +4,13 @@ Replication code for the cross-lingual (English, Dutch, Italian) evaluation of a
 zero-shot GPT-4o + embedding-based entity-linking pipeline on the SemEval-2014 Task 7
 (ShARe/CLEF eHealth 2014 Task 2) disorder corpus.
 
-> Mazzucato S, Seinen TM, Moccia S, Micera S, Bandini A, van Mulligen EM.
-> *Advancements in Multilingual Biomedical Natural Language Processing:
-> Exploring Large Language Models for Named Entity Recognition and Linking.*
+> Mazzucato S, et al. *Advancements in Multilingual Biomedical Natural Language
+> Processing: Exploring Large Language Models for Named Entity Recognition and Linking.*
 > 2026. Manuscript under review.
 
 This repository contains the evaluation code and baseline scripts needed to replicate
-the methodology of the paper, together with the saved GPT-4o predictions. The clinical
-corpus itself is not included (access requires a PhysioNet credential, see
-[`data/README.md`](data/README.md)).
+the methodology of the paper. The clinical corpus and GPT-4o predictions are not
+included (see *Data access* sections below).
 
 ---
 

@@ -1,0 +1,49 @@
+# ── Clinical corpus (ShARe/CLEF, MIMIC) ──────────────────────────────────────
+data/*.csv
+data/*.txt
+data/*.json
+data/*.tsv
+data/*.xml
+
+# ── GPT-4o predictions ────────────────────────────────────────────────────────
+data/predictions/
+
+# ── UMLS resources ────────────────────────────────────────────────────────────
+data/umls_*.csv
+data/quickumls_db/
+data/medcat_model/
+
+# ── BEL entity files ──────────────────────────────────────────────────────────
+data/bel/
+
+# ── Embedding cache ───────────────────────────────────────────────────────────
+embedding_cache/
+
+# ── Script outputs ────────────────────────────────────────────────────────────
+results_*.json
+bel_results_*.json
+medcat_results.json
+quickumls_pr_curve.csv
+
+# ── Python artifacts ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── Environments ──────────────────────────────────────────────────────────────
+.env
+.venv/
+venv/
+env/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── OS / IDE ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
