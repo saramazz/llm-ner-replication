@@ -94,6 +94,8 @@ Two-column CSV (CUI, entity_text). Obtain from UMLS MRCONSO.RRF filtered to:
 
 **QuickUMLS** (`baselines/quickumls_baseline.py`): same format as MedCAT.
 
+**GLiNER** (`baselines/gliner_baseline.py`): same format as MedCAT.
+
 ---
 
 ## UMLS resources

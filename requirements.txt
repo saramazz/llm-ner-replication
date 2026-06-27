@@ -10,14 +10,20 @@ scipy>=1.10  # for any statistical tests
 sentence-transformers>=2.2
 transformers>=4.35
 torch>=2.0
+# Note: the paper mentions ChromaDB; bel_eval.py uses sentence-transformers directly
+# (no vector DB required). Install chromadb only if you extend the pipeline.
+# chromadb>=0.4
 
 # MedCAT baseline
-# Pin 1.10.x: the model pack (umls_sm_pt2ch_533bab5115c6c2d6.zip) is a v1 pack
-# and is not compatible with MedCAT 2.x
-medcat==1.10.3
+# Pin 1.16.12: version used in the paper. The model pack (umls_sm_pt2ch_533bab5115c6c2d6.zip)
+# is a v1 pack and is not compatible with MedCAT 2.x.
+medcat==1.16.12
 
 # QuickUMLS baseline (system-level install may be needed for LevelDB)
 quickumls
+
+# GLiNER baseline
+gliner>=0.1
 
 # Figure generation
 matplotlib>=3.7

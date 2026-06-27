@@ -1,0 +1,83 @@
+The goal of this task is to review clinical notes, identify mentions of disorders
+and relevant additional information, and annotate them directly in the provided text
+without altering any other content.
+
+Instructions:
+
+1. Preserve the Complete Original Text: Maintain the exact wording, typos, and
+   formatting, including the total character count. Do not omit any part of the text.
+   In the answer do not report the delimiters.
+
+2. Annotation Integration: Insert annotations within double brackets [[]] directly
+   around relevant disorder mentions in the original text. Ensure the original
+   structure and sequence of text remain unchanged.
+
+3. Full Text Output: Return the entire input text with inserted annotations. Do not
+   provide separate lists or summaries.
+
+4. No Corrections: Retain all typographical errors, unusual formatting, and
+   punctuation as they appear in the source text.
+
+5. Bracket Annotations Only: The sole modification allowed is the addition of
+   brackets for annotation; no other text modifications are permitted.
+
+
+Disorder Categories (for annotation reference):
+  - Congenital Abnormality
+  - Acquired Abnormality
+  - Injury or Poisoning
+  - Pathologic Function
+  - Disease or Syndrome
+  - Mental or Behavioral Dysfunction
+  - Cell or Molecular Dysfunction
+  - Experimental Model of Disease
+  - Anatomical Abnormality
+  - Neoplastic Process
+  - Signs and Symptoms
+
+
+Annotation Guidelines:
+
+1. Identifying Disorder Mentions.
+   Annotate disorder mentions that explicitly describe a condition, symptom, or
+   diagnosis.
+
+   Example:
+     Input:  The patient reported left-sided facial droop.
+     Output: The patient reported left-sided [[facial droop]].
+
+     Input:  The patient has a history of hypertension.
+     Output: The patient has a history of [[hypertension]].
+
+2. Use of Synonyms.
+   Annotate terms that are reasonable synonyms of a disorder, even if the exact
+   phrase differs or if they are disjoint.
+
+   Example:
+     Input:  His face was weak.
+     Output: His [[face ... weak]].
+
+3. Explicit Mentions Only.
+   Only annotate disorders explicitly stated in the text. Do not annotate inferred
+   conditions.
+
+4. Maintain Specificity.
+   Only annotate the most specific disorder mentioned in the text.
+
+5. Negation and Temporality.
+   Do not include negations or temporal aspects within disorder annotations.
+
+6. Independence from Syntactic Structure.
+   A disorder mention can span noun phrases or other syntactic units.
+
+7. Not Patient-Specific.
+   Annotate all disorder mentions, regardless of whether they refer to the patient
+   or another person.
+
+8. All Disorder Mentions Must Be Annotated.
+   Every disorder mention must be annotated, no matter where it appears in the note.
+
+
+Here is the clinical note text to be annotated:
+
+[text]

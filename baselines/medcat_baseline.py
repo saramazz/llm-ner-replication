@@ -3,28 +3,26 @@ r"""
 medcat_baseline.py — PART A2: MedCAT baseline on the 133 English docs,
 scored with the SAME overlap + strict P/R/F1 scheme as PART A1.
 
-WHY medcat 1.16.x (not 2.x): your model pack `umls_sm_wstatus_2021_aa.zip` is a
-2021 / MedCAT-v1 pack. The PyPI `medcat` 2.x line uses a new model-pack format and
-will NOT load a v1 pack directly. So pin a 1.16.x.
+WHY medcat 1.16.12 (not 2.x): the model pack `umls_sm_pt2ch_533bab5115c6c2d6.zip` is a
+v1 pack. The PyPI `medcat` 2.x line uses a new model-pack format and will NOT load a
+v1 pack directly. Pin 1.16.12 (see requirements.txt); this is the version used in the paper.
 
-INSTALL (env picor, inside WSL)
--------------------------------
-    conda activate picor
-    # core (pulls torch, spacy, transformers, gensim, blis, peft, datasets ...):
-    pip install "medcat==1.16.12"
-    # MedCAT needs a base spaCy English pipeline available:
+INSTALL
+-------
+    pip install -r requirements.txt
+    # MedCAT needs a base spaCy English pipeline:
     python -m spacy download en_core_web_md
-    # sanity check the API path:
+    # sanity check:
     python -c "from medcat.cat import CAT; print('medcat import OK')"
 
-Put the pack here (you already have the path in your error):
-    data/medcat_model/umls_sm_wstatus_2021_aa.zip
+Put the pack here:
+    data/medcat_model/umls_sm_pt2ch_533bab5115c6c2d6.zip
 
 RUN (heavy-ish: CDB load + 133 docs; ~minutes, a couple GB RAM)
 ---------------------------------------------------------------
     OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 nice -n 19 \
       python medcat_baseline.py \
-        --model_pack data/medcat_model/umls_sm_wstatus_2021_aa.zip \
+        --model_pack data/medcat_model/umls_sm_pt2ch_533bab5115c6c2d6.zip \
         --docs  path/to/en_docs.json \
         --gold  path/to/en_gold.json \
         --out   medcat_a2_results.json

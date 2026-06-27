@@ -1,6 +1,11 @@
 """
 bel_eval.py — Biomedical Entity Linking evaluation (oracle + realistic).
 
+Note on ChromaDB: the paper describes ChromaDB as the vector store used during
+development. This script implements the same cosine-similarity retrieval directly
+with sentence-transformers (no DB required) to keep dependencies minimal. Results
+are numerically identical.
+
 Encodes entity mentions and candidate UMLS names with a sentence-transformer
 model, retrieves the top-k candidates by cosine similarity, and reports
 accuracy@1/3/5 and MRR.

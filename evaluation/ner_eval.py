@@ -53,7 +53,6 @@ from m2_matcher import (
     abs_to_lc,
     align_lines,
     bootstrap_f1,
-    extract_abs,
     extract_lc,
     match_clean_cb,
     match_full,
@@ -84,7 +83,7 @@ def evaluate(
     """
     Run M2 NER evaluation for one language.
 
-    Returns a dict with keys: full, naive_cb, clean_cb (each with P/R/F1/CI95).
+    Returns a dict with keys: full, clean_cb (each with P/R/F1/CI95).
     """
     annot_df = pd.read_csv(annot_path, dtype=str)
     raw_df   = pd.read_csv(raw_path,   dtype=str)

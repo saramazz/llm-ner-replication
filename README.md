@@ -23,7 +23,9 @@ included (see *Data access* sections below).
 | `evaluation/bel_eval.py`   | Biomedical entity linking: oracle + realistic, accuracy@k + MRR |
 | `baselines/medcat_baseline.py`    | MedCAT baseline (overlap + strict F1, concept accuracy) |
 | `baselines/quickumls_baseline.py` | QuickUMLS P/R curve (Jaccard threshold sweep) |
+| `baselines/gliner_baseline.py`    | GLiNER zero-shot NER baseline (overlap F1) |
 | `figures/figures_v2.py`           | Reproduce Figure 2 (self-contained, no data needed) |
+| `prompts/gpt4o_annotation_prompt.txt` | Full zero-shot annotation prompt used with GPT-4o (Section S1 of the Supplementary Material) |
 | `data/predictions/`               | GPT-4o zero-shot predictions — available on request from the authors (clinical text is derived from MIMIC-II and cannot be redistributed publicly; requires PhysioNet DUA) |
 | `data/README.md`                  | Data-access instructions and expected file formats |
 | `requirements.txt`                | Pinned dependencies |
@@ -102,7 +104,7 @@ python baselines/medcat_baseline.py \
 
 The model pack (`umls_sm_pt2ch_533bab5115c6c2d6.zip`) is a UMLS "small" (`umls_sm`) pack
 from the MedCAT model repository; downloading it **requires a valid UMLS licence**. It
-was run with `medcat==1.10.3` (v1 API; not 2.x).
+was run with `medcat==1.16.12` (v1 API; not 2.x).
 
 ---
 
@@ -124,6 +126,23 @@ python baselines/quickumls_baseline.py \
 Paper operating points (English, 131 test documents, overlap matching):
 - thr=0.70: P=0.428, R=0.677, F1=0.524
 - thr=0.80: P=0.634, R=0.649, F1=0.641
+
+---
+
+## GLiNER baseline
+
+```bash
+python baselines/gliner_baseline.py \
+    --docs  data/en_docs.json \
+    --gold  data/en_gold.json \
+    --model urchade/gliner_medium-v2.1 \
+    --threshold 0.5 \
+    --out   gliner_results.json
+```
+
+The script runs GLiNER zero-shot using the 12 UMLS disorder semantic-type labels
+as entity types. Paper results (English, 131 docs, overlap matching):
+P=0.44, R=0.11, F1=0.19. Dutch F1=0.13, Italian F1=0.11.
 
 ---
 
@@ -149,16 +168,26 @@ All entity texts are lowercased before encoding to guard against this in any cas
 
 ## GPT-4o annotation
 
-The zero-shot GPT-4o predictions used in the paper are available on request
-from the authors (`data/predictions/`). They are not included in this public
-repository because the annotation files contain clinical text derived from MIMIC-II,
-which cannot be redistributed (PhysioNet data use agreement). Researchers who hold
-a valid PhysioNet credential may contact the corresponding author. They were
-generated with GPT-4o (the exact API snapshot is not recorded in the code), using a
-prompt that wraps disorder mentions in `[[...]]` brackets. **Re-running GPT-4o will not
-reproduce identical outputs** because of model updates; the evaluation scripts work with
-any output that follows the `[[entity]]` convention. The full annotation prompt is in
-the Supplementary Material (Section S1) of the paper.
+The full zero-shot annotation prompt is in [`prompts/gpt4o_annotation_prompt.txt`](prompts/gpt4o_annotation_prompt.txt)
+(reproduced verbatim from Supplementary Material, Section S1). It instructs GPT-4o to
+wrap disorder mentions in `[[...]]` brackets while preserving the original text unchanged.
+
+The GPT-4o predictions used in the paper are available on request from the authors
+(`data/predictions/`). They are not included in this public repository because the
+annotation files contain clinical text derived from MIMIC-II, which cannot be
+redistributed (PhysioNet data use agreement). Researchers who hold a valid PhysioNet
+credential may contact the corresponding author.
+
+**Re-running GPT-4o will not reproduce identical outputs** because of model updates;
+the evaluation scripts work with any output that follows the `[[entity]]` convention.
+
+### Translation pipeline
+
+The Dutch and Italian corpora were produced by translating the English ShARe/CLEF
+corpus with GPT-4 Turbo, using span-preserving markers `[[span][CUI]]` to track entity
+boundaries through translation. The translation code is not included in this repository.
+The translated corpus and predictions are available on request together with the
+English predictions (same PhysioNet credential requirement applies).
 
 ---
 
