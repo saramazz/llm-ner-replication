@@ -164,12 +164,8 @@ the Supplementary Material (Section S1) of the paper.
 
 ## Citation
 
-```bibtex
-@unpublished{mazzucato2026multilingual,
-  title  = {Advancements in Multilingual Biomedical Natural Language Processing:
-            Exploring Large Language Models for Named Entity Recognition and Linking},
-  author = {Mazzucato, Sara and others},
-  year   = {2026},
-  note   = {Manuscript under review}
-}
-```
+See [CITATION.cff](CITATION.cff) for the full citation metadata.
+GitHub renders this as a **"Cite this repository"** button on the repo page.
+
+If you prefer BibTeX, use the *Export BibTeX* option from that button,
+or cite the paper directly once a DOI is assigned.

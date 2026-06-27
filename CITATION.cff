@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper below."
+type: article
+title: >-
+  Advancements in Multilingual Biomedical Natural Language Processing:
+  Exploring Large Language Models for Named Entity Recognition and Linking
+authors:
+  - family-names: Mazzucato
+    given-names: Sara
+    email: sara.mazzucato.phd@gmail.com
+  - family-names: Seinen
+    given-names: Tom M.
+  - family-names: Moccia
+    given-names: Sara
+  - family-names: Micera
+    given-names: Silvestro
+  - family-names: Bandini
+    given-names: Andrea
+  - family-names: van Mulligen
+    given-names: Erik M.
+year: 2026
+journal: "Journal of the American Medical Informatics Association Open"
+notes: "Manuscript under review"
+repository-code: "https://github.com/saramazz/llm-ner-replication"
+license: MIT
