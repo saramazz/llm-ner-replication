@@ -4,17 +4,17 @@
 
 The experiments use the **ShARe/CLEF eHealth Evaluation Lab 2014** corpus
 (SemEval-2014 Task 7, Subtask A), which consists of de-identified clinical notes
-annotated with UMLS disorder mentions.
+annotated with UMLS disorder mentions (the ShARe corpus, built on MIMIC-II v2.5 notes).
 
-**The data cannot be redistributed.** Access requires a valid PhysioNet credential
-linked to MIMIC-III data use agreement completion.
+**The data cannot be redistributed.** Access requires PhysioNet credentialed access
+and the Data Use Agreement of the ShARe/CLEF eHealth 2014 Task 2 project.
 
 ### How to obtain the data
 
 1. Create a PhysioNet account at https://physionet.org
-2. Complete the MIMIC-III data use agreement
-3. Request access to the ShARe/CLEF 2014 corpus via the SemEval-2014 Task 7
-   organisers or through the i2b2/n2c2 portal (https://n2c2.dbmi.hms.harvard.edu)
+2. Become a credentialed user and complete the required human-subjects research training
+3. Request access to https://physionet.org/content/shareclefehealth2014task2/ and sign
+   its Data Use Agreement
 
 **Corpus statistics:**
 - Train: 199 documents + 100 development documents (used as training)
