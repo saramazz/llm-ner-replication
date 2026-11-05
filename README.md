@@ -23,9 +23,12 @@ included (see *Data access* sections below).
 | `evaluation/bel_eval.py`   | Biomedical entity linking: oracle + realistic, accuracy@k + MRR |
 | `baselines/medcat_baseline.py`    | MedCAT baseline (overlap + strict F1, concept accuracy) |
 | `baselines/quickumls_baseline.py` | QuickUMLS P/R curve (Jaccard threshold sweep) |
-| `baselines/gliner_baseline.py`    | GLiNER zero-shot NER baseline (overlap F1) |
+| `baselines/gliner_baseline.py`    | GLiNER zero-shot NER baseline (sliding window; overlap and strict F1) |
 | `figures/figures_v2.py`           | Reproduce Figure 2 (self-contained, no data needed) |
-| `prompts/gpt4o_annotation_prompt.txt` | Full zero-shot annotation prompt used with GPT-4o (Section S1 of the Supplementary Material) |
+| `prompts/gpt4o_annotation_prompt.txt` | Full few-shot annotation prompt used with GPT-4o, verbatim (Section S1 of the Supplementary Material) |
+| `prompts/gliner_labels_*.txt`     | GLiNER entity labels (the 11 prompt categories; the generic labels of the ablation) |
+| `Extr_Val_R/R/`                   | Corpus standardisation, annotation embedding (`[[span][CUI]]`), translation and annotation projection (R) |
+| `src/01_annotation.py`            | The script that sent the prompt and the notes to GPT-4o |
 | `data/predictions/`               | GPT-4o zero-shot predictions — available on request from the authors (clinical text is derived from MIMIC-II and cannot be redistributed publicly; requires PhysioNet DUA) |
 | `data/README.md`                  | Data-access instructions and expected file formats |
 | `requirements.txt`                | Pinned dependencies |
@@ -133,16 +136,21 @@ Paper operating points (English, 131 test documents, overlap matching):
 
 ```bash
 python baselines/gliner_baseline.py \
-    --docs  data/en_docs.json \
-    --gold  data/en_gold.json \
-    --model urchade/gliner_medium-v2.1 \
-    --threshold 0.5 \
-    --out   gliner_results.json
+    --annot   data/SC_test_loc_english_annot.csv \
+    --raw     data/SC_test_eng.csv \
+    --doc_ids data/doc_ids_131.txt \
+    --labels  prompts/gliner_labels_gpt4o.txt \
+    --out     results_gliner_english.json
 ```
 
-The script runs GLiNER zero-shot using the 12 UMLS disorder semantic-type labels
-as entity types. Paper results (English, 131 docs, overlap matching):
-P=0.44, R=0.11, F1=0.19. Dutch F1=0.13, Italian F1=0.11.
+GLiNER (`urchade/gliner_multi-v2.1`, threshold 0.5) truncates its input at 384 words, so
+each note is processed in sliding windows of 384 words overlapping by 64; the entity labels
+are the 11 disorder categories of the GPT-4o prompt (`prompts/gliner_labels_gpt4o.txt`).
+Paper results (131 docs, overlap matching against full gold): English F1=0.22, Dutch
+F1=0.11, Italian F1=0.15. `--window 0` (whole note) and
+`--labels prompts/gliner_labels_generic.txt` give the ablation of Additional file 1, Section S6.
+`--doc_ids` lists the 131 evaluated notes, one id per line (not distributed: the ids fall
+under the data use agreement; see `data/README.md`).
 
 ---
 
@@ -168,9 +176,13 @@ All entity texts are lowercased before encoding to guard against this in any cas
 
 ## GPT-4o annotation
 
-The full zero-shot annotation prompt is in [`prompts/gpt4o_annotation_prompt.txt`](prompts/gpt4o_annotation_prompt.txt)
-(reproduced verbatim from Supplementary Material, Section S1). It instructs GPT-4o to
-wrap disorder mentions in `[[...]]` brackets while preserving the original text unchanged.
+The annotation prompt is in [`prompts/gpt4o_annotation_prompt.txt`](prompts/gpt4o_annotation_prompt.txt),
+verbatim as sent (Supplementary Material, Section S1). It states the annotation guidelines
+with worked input-output examples (a few-shot prompt) and instructs GPT-4o to wrap disorder
+mentions in `[[...]]` brackets while preserving the original text unchanged. The calling
+code is [`src/01_annotation.py`](src/01_annotation.py) (model `gpt-4o`, temperature 0.5,
+max_tokens 2000); it reads the prompt from `saved_results/annotation_guidelines_SC.txt`, so
+copy the prompt file there.
 
 The GPT-4o predictions used in the paper are available on request from the authors
 (`data/predictions/`). They are not included in this public repository because the
@@ -183,11 +195,27 @@ the evaluation scripts work with any output that follows the `[[entity]]` conven
 
 ### Translation pipeline
 
-The Dutch and Italian corpora were produced by translating the English ShARe/CLEF
-corpus with GPT-4 Turbo, using span-preserving markers `[[span][CUI]]` to track entity
-boundaries through translation. The translation code is not included in this repository.
-The translated corpus and predictions are available on request together with the
-English predictions (same PhysioNet credential requirement applies).
+Run from the repository root, with the PhysioNet release placed under
+`Extr_Val_R/Corpora_raw/CLEF2014/` (all `Extr_Val_R/Corpora_*` folders are git-ignored):
+
+| Step | Script (`Extr_Val_R/R/Process_ShareClef/`) | What it does |
+|---|---|---|
+| 1 | `1_SC_{train,test}_standardize.R` | reads notes and annotations into tables |
+| 3 | `3_SC_{train,test}_MakeInTextAnnotations.R` | wraps each gold mention in `[[span][CUI]]` by script (CUI-less: `[C0000000]`) |
+| 4 | `4_SC_test_train_translate_GPT.R` | translates each note through the OpenAI API (Italian: `gpt-4o-mini`) |
+| 5 | `5_SC_{train,test}_ProcessTranslationToCorpus.R` | extracts the markers with a regular expression and writes the translated corpus and gold |
+
+Shared functions are in `Extr_Val_R/R/Tool_functions.R`. The Dutch corpus is the GPT-4 Turbo
+(`gpt-4-0125-preview`) translation of Seinen et al. (JAMIA 2024), produced with the same
+protocol. As in that work, the translated ShARe/CLEF corpora cannot be made publicly
+available because of the PhysioNet data use agreement.
+
+> **Data use.** Steps 4 and the GPT-4o annotation send note text to the OpenAI API.
+> PhysioNet's data use agreement does not allow sending these data to third-party services
+> unless a compliant route is in place (see
+> <https://physionet.org/news/post/llm-responsible-use/>). The scripts document what was run;
+> do not run them on PhysioNet data without such a route. API keys are read from the
+> environment or a git-ignored `.env` (see `.env.example`); never commit a key.
 
 ---
 

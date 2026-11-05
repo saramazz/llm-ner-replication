@@ -23,7 +23,7 @@ medcat==1.16.12
 quickumls
 
 # GLiNER baseline
-gliner>=0.1
+gliner>=0.2.26   # model.inference(); tested with 0.2.26
 
 # Figure generation
 matplotlib>=3.7

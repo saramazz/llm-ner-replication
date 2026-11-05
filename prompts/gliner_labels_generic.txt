@@ -1,0 +1,7 @@
+# Labels of the published GLiNER run (whole-note ablation)
+disease
+disorder
+sign
+symptom
+medical condition
+finding

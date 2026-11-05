@@ -1,0 +1,12 @@
+# The 11 disorder categories of prompts/gpt4o_annotation_prompt.txt, verbatim
+Congenital Abnormality
+Acquired Abnormality
+Injury or Poisoning
+Pathologic Function
+Disease or Syndrome
+Mental or Behavioral Dysfunction
+Cell or Molecular Dysfunction
+Experimental Model of Disease
+Anatomical Abnormality
+Neoplastic Process
+Signs and Symptoms

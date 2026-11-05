@@ -1,83 +1,104 @@
-The goal of this task is to review clinical notes, identify mentions of disorders
-and relevant additional information, and annotate them directly in the provided text
-without altering any other content.
+The goal of this task is to review clinical notes, identify mentions of disorders and relevant additional information, and annotate them directly in the provided text without altering any other content.
 
 Instructions:
-
-1. Preserve the Complete Original Text: Maintain the exact wording, typos, and
-   formatting, including the total character count. Do not omit any part of the text.
-   In the answer do not report the delimiters.
-
-2. Annotation Integration: Insert annotations within double brackets [[]] directly
-   around relevant disorder mentions in the original text. Ensure the original
-   structure and sequence of text remain unchanged.
-
-3. Full Text Output: Return the entire input text with inserted annotations. Do not
-   provide separate lists or summaries.
-
-4. No Corrections: Retain all typographical errors, unusual formatting, and
-   punctuation as they appear in the source text.
-
-5. Bracket Annotations Only: The sole modification allowed is the addition of
-   brackets for annotation; no other text modifications are permitted.
-
+1. Preserve the Complete Original Text: Maintain the exact wording, typos, and formatting, including the total character count. Do not omit any part of the text provided between ''' '''. In the answer do not report the ''' '''.
+2. Annotation Integration: Insert annotations within double brackets [[]] directly around relevant disorder mentions in the original text. Ensure the original structure and sequence of text remain unchanged.
+3. Full Text Output: Return the entire input text with inserted annotations. Do not provide separate lists or summaries.
+4. No Corrections: Retain all typographical errors, unusual formatting, and punctuation as they appear in the source text.
+5. Bracket Annotations Only: The sole modification allowed is the addition of brackets for annotation—no other text modifications are permitted.
 
 Disorder Categories (for annotation reference):
-  - Congenital Abnormality
-  - Acquired Abnormality
-  - Injury or Poisoning
-  - Pathologic Function
-  - Disease or Syndrome
-  - Mental or Behavioral Dysfunction
-  - Cell or Molecular Dysfunction
-  - Experimental Model of Disease
-  - Anatomical Abnormality
-  - Neoplastic Process
-  - Signs and Symptoms
-
+- Congenital Abnormality
+- Acquired Abnormality
+- Injury or Poisoning
+- Pathologic Function
+- Disease or Syndrome
+- Mental or Behavioral Dysfunction
+- Cell or Molecular Dysfunction
+- Experimental Model of Disease
+- Anatomical Abnormality
+- Neoplastic Process
+- Signs and Symptoms
 
 Annotation Guidelines:
 
-1. Identifying Disorder Mentions.
-   Annotate disorder mentions that explicitly describe a condition, symptom, or
-   diagnosis.
+1.Identifying Disorder Mentions
+Annotate disorder mentions that explicitly describe a condition, symptom, or diagnosis.
+Example
+Input: The patient reported left-sided facial droop.
+Output: The patient reported left-sided [[facial droop]].
+Input: The patient has a history of hypertension.
+Output: The patient has a history of [[hypertension]].
 
-   Example:
-     Input:  The patient reported left-sided facial droop.
-     Output: The patient reported left-sided [[facial droop]].
+2. Use of Synonyms
+Annotate terms that are reasonable synonyms of a disorder, even if the exact phrase differs or if they are disjoint.
+Example:
+Input: The patient reported left-sided facial droop.
+Output: The patient reported left-sided [[facial droop]].
+Input: His face was weak.
+Output: His [[face ... weak]].
 
-     Input:  The patient has a history of hypertension.
-     Output: The patient has a history of [[hypertension]].
+3. Explicit Mentions Only
+Only annotate disorders explicitly stated in the text.
+Do not annotate inferred conditions.
+Example:
+Input: The patient's chem profile reveals a 138 sodium, 4.0 potassium, 106 chloride, 19 bicarb, 43 and 2.2 are the BUN and creatinine, indicating probable blood in the GI tract.
+Output: The patient's chem profile reveals a 138 sodium, 4.0 potassium, 106 chloride, 19 bicarb, 43 and 2.2 are the BUN and creatinine, indicating probable [[blood in the GI tract]].
+Input: She had a Crohn flare with symptoms of bowel obstruction that typically resolves with rehydration. Her current symptoms are reminiscent of this.
+Output: She had a [[Crohn]] flare with symptoms of [[bowel obstruction]] that typically resolves with rehydration.
+Example (No Annotation Needed):
+Input: The lab results indicate an elevated white blood cell count, suggesting an infection.
+Output: The lab results indicate an elevated white blood cell count, suggesting an infection.
 
-2. Use of Synonyms.
-   Annotate terms that are reasonable synonyms of a disorder, even if the exact
-   phrase differs or if they are disjoint.
+4. Maintain Specificity
+Only annotate the most specific disorder mentioned in the text.
+Example:
+Input: The patient has a small bowel obstruction.
+Output: The patient has a [[small bowel obstruction]].
+Input: The patient was found to have left lower extremity DVT.
+Output: The patient was found to have left [[lower extremity DVT]].
+Input: The patient has severe pre-eclampsia.
+Output: The patient has [[severe pre-eclampsia]].
+Input: The patient has chronic gingivitis.
+Output: The patient has [[chronic gingivitis]].
 
-   Example:
-     Input:  His face was weak.
-     Output: His [[face ... weak]].
+5. Negation and Temporality
+Do not include negations or temporal aspects within disorder annotations.
+Example:
+Input: No chest pain was reported.
+Output: No [[chest pain]] was reported.
+Input: No evidence of myocardial infarction.
+Output: No evidence of [[myocardial infarction]].
+Input: The patient has a history of stroke.
+Output: The patient has a history of [[stroke]].
+Input: The patient had a heart attack five years ago.
+Output: The patient had a [[heart attack]] five years ago.
 
-3. Explicit Mentions Only.
-   Only annotate disorders explicitly stated in the text. Do not annotate inferred
-   conditions.
 
-4. Maintain Specificity.
-   Only annotate the most specific disorder mentioned in the text.
+6. Independence from Syntactic Structure
+A disorder mention can span noun phrases or other syntactic units.
+Example:
+Input: The patient had a tumor of the skin removed.
+Output: The patient had a [[tumor of the skin]] removed.
+Input: A tumor was found in the left ovary.
+Output: A [[tumor]] was found in the left [[ovary]].
 
-5. Negation and Temporality.
-   Do not include negations or temporal aspects within disorder annotations.
+7. Not Patient-Specific
+Annotate all disorder mentions, regardless of whether they refer to the patient or another person.
+Example:
+Input: The patient’s father has schizophrenia.
+Output: The patient’s father has [[schizophrenia]].
+Input: He should return to the ED immediately if any rash occurs.
+Output: He should return to the ED immediately if any [[rash]] occurs.
+Input: The patient was referred to the lupus clinic.
+Output: The patient was referred to the [[lupus]] clinic.
 
-6. Independence from Syntactic Structure.
-   A disorder mention can span noun phrases or other syntactic units.
+8. All Disorder Mentions Must Be Annotated
+Every disorder mention must be annotated, no matter where it appears in the note.
+Example:
+Input: He has diabetes, hypertension, and chronic kidney disease.
+Output: He has [[diabetes]], [[hypertension]], and [[chronic kidney disease]].
 
-7. Not Patient-Specific.
-   Annotate all disorder mentions, regardless of whether they refer to the patient
-   or another person.
-
-8. All Disorder Mentions Must Be Annotated.
-   Every disorder mention must be annotated, no matter where it appears in the note.
 
 
 Here is the clinical note text to be annotated:
-
-[text]

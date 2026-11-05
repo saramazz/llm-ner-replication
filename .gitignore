@@ -47,3 +47,7 @@ env/
 Thumbs.db
 .idea/
 .vscode/
+
+# ── Translation / annotation pipeline data (MIMIC-derived, never committed) ──
+Extr_Val_R/Corpora_*/
+saved_results/
