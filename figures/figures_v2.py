@@ -17,21 +17,23 @@ OUT_DIR = os.path.dirname(os.path.abspath(__file__))
 # ---- Locked numbers (overlap, M2 scorer) ------------------------------------
 NER = {
     "English": dict(P=0.834, R=0.463, F1=0.596, ci=(0.571, 0.618)),  # 0.596 so %.2f shows 0.60
-    "Dutch":   dict(P=0.738, R=0.553, F1=0.632, ci=(0.590, 0.680)),
-    "Italian": dict(P=0.750, R=0.560, F1=0.642, ci=(0.590, 0.690)),
+    "Dutch":   dict(P=0.732, R=0.557, F1=0.633, ci=(0.585, 0.675)),
+    "Italian": dict(P=0.754, R=0.574, F1=0.652, ci=(0.608, 0.696)),
 }
+# (restricted, realistic) accuracy@1, results/results_bel_canonical_131.json
 BEL_EN = {
-    "all-MiniLM": (0.94, 0.69),
-    "BioBERT":    (0.94, 0.26),
-    "mSapBERT":   (0.94, 0.69),
+    "all-MiniLM": (0.949, 0.708),
+    "BioBERT":    (0.950, 0.269),
+    "mSapBERT":   (0.949, 0.708),
 }
-BEL_CEILING_EN = 0.85
+BEL_CEILING_EN = 0.859
 BASELINES = [
     ("GPT-4o",              0.596),
-    ("QuickUMLS\n(thr 0.70)", 0.524),
-    ("QuickUMLS\n(thr 0.80)", 0.641),
+    ("QuickUMLS (0.70)", 0.524),
+    ("QuickUMLS (0.80)", 0.641),
     ("MedCAT",              0.629),
-    ("GLiNER",              0.19),
+    ("GLiNER (0.5)", 0.223),   # prompt labels, default threshold: results_gliner_C_gpt4o_window_english.json
+    ("GLiNER (0.1, tuned)", 0.687),  # generic labels, threshold chosen on train: results_gliner_D_published_window_thr0.1.json
 ]
 SUPERVISED_REF = 0.90  # supervised SemEval-2014 Task 7, best overlap F1
 
@@ -94,7 +96,7 @@ wb   = 0.36
 orac = [BEL_EN[e][0] for e in encs]
 real = [BEL_EN[e][1] for e in encs]
 
-b4 = axb.bar([i - wb / 2 for i in xb], orac, wb, label="Oracle",         color=DARK)
+b4 = axb.bar([i - wb / 2 for i in xb], orac, wb, label="Restricted",     color=DARK)
 b5 = axb.bar([i + wb / 2 for i in xb], real, wb, label="Realistic UMLS", color=LIGHT)
 _labels(axb, b4)
 _labels(axb, b5)
@@ -104,7 +106,7 @@ axb.axhline(BEL_CEILING_EN, ls="--", lw=1.4, color=GREY,
 axb.set_xticks(xb); axb.set_xticklabels(encs)
 axb.set_ylim(0, 1.04)
 axb.set_ylabel("Accuracy@1 (English)")
-axb.set_title("(b) Entity linking: oracle vs realistic")
+axb.set_title("(b) Entity linking: restricted vs realistic")
 
 # Legend outside axes (right side) -- avoids overlap with tall oracle bars
 axb.legend(bbox_to_anchor=(1.02, 0.5), loc="center left",
@@ -122,15 +124,18 @@ _labels(axc, bars)
 axc.axhline(SUPERVISED_REF, ls="--", lw=1.4, color=NAVY,
             label=f"Supervised ref. (overlap {SUPERVISED_REF:.2f})")
 axc.set_xticks(range(len(names)))
-axc.set_xticklabels(names, fontsize=10)
+axc.set_xticklabels(names, fontsize=10, rotation=45, ha="right", rotation_mode="anchor")  # no overlap (R1)
 axc.set_ylim(0, 1.04)
 axc.set_ylabel("Overlap F1 (English)")
 axc.set_title("(c) NER vs baselines (English)")
 axc.legend(loc="upper right", frameon=False)
 
 plt.tight_layout()
-for ext in ("svg", "png"):
+for ext in ("svg", "png", "pdf"):
     plt.savefig(os.path.join(OUT_DIR, f"results.{ext}"),
                 bbox_inches="tight", dpi=300)
+# BMC does not accept SVG for submission; TIFF at 600 dpi is the high-resolution
+# raster fallback to PDF for the separately-uploaded figure file.
+plt.savefig(os.path.join(OUT_DIR, "results.tiff"), bbox_inches="tight", dpi=600)
 plt.close()
-print(f"Saved results.svg and results.png to {OUT_DIR}")
+print(f"Saved results.{{svg,png,pdf,tiff}} to {OUT_DIR}")

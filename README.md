@@ -24,7 +24,7 @@ included (see *Data access* sections below).
 | `baselines/medcat_baseline.py`    | MedCAT baseline (overlap + strict F1, concept accuracy) |
 | `baselines/quickumls_baseline.py` | QuickUMLS P/R curve (Jaccard threshold sweep) |
 | `baselines/gliner_baseline.py`    | GLiNER zero-shot NER baseline (sliding window; overlap and strict F1) |
-| `figures/figures_v2.py`           | Reproduce Figure 2 (self-contained, no data needed) |
+| `figures/figures_v2.py`           | Reproduce Figure 3 (self-contained, no data needed) |
 | `prompts/gpt4o_annotation_prompt.txt` | Full few-shot annotation prompt used with GPT-4o, verbatim (Section S1 of the Supplementary Material) |
 | `prompts/gliner_labels_*.txt`     | GLiNER entity labels (the 11 prompt categories; the generic labels of the ablation) |
 | `Extr_Val_R/R/`                   | Corpus standardisation, annotation embedding (`[[span][CUI]]`), translation and annotation projection (R) |
@@ -143,12 +143,18 @@ python baselines/gliner_baseline.py \
     --out     results_gliner_english.json
 ```
 
-GLiNER (`urchade/gliner_multi-v2.1`, threshold 0.5) truncates its input at 384 words, so
-each note is processed in sliding windows of 384 words overlapping by 64; the entity labels
-are the 11 disorder categories of the GPT-4o prompt (`prompts/gliner_labels_gpt4o.txt`).
-Paper results (131 docs, overlap matching against full gold): English F1=0.22, Dutch
-F1=0.11, Italian F1=0.15. `--window 0` (whole note) and
-`--labels prompts/gliner_labels_generic.txt` give the ablation of Additional file 1, Section S6.
+GLiNER (`urchade/gliner_multi-v2.1`) truncates its input at 384 words, so each note is
+processed in sliding windows of 384 words overlapping by 64. Two configurations are reported
+(131 docs, overlap matching against the full gold):
+
+| Labels | `--threshold` | English | Dutch | Italian |
+|---|---|---|---|---|
+| 11 prompt categories (`prompts/gliner_labels_gpt4o.txt`) | 0.5 (library default) | 0.22 | 0.11 | 0.15 |
+| generic labels (`prompts/gliner_labels_generic.txt`) | 0.1 (selected on the training split) | 0.69 | 0.67 | 0.69 |
+
+The label set and threshold were selected by overlap F1 on the 299 training notes, without
+using the test notes; the full sweep is in Additional file 1, Section S6. `--window 0` (whole
+note) gives the windowing ablation.
 `--doc_ids` lists the 131 evaluated notes, one id per line (not distributed: the ids fall
 under the data use agreement; see `data/README.md`).
 
