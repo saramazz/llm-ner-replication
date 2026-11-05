@@ -156,10 +156,35 @@ under the data use agreement; see `data/README.md`).
 
 ## BEL evaluation
 
+### Building the BEL input files
+
+The linking queries are the gold mentions that GPT-4o recognised: gold rows matched
+one-to-one by a predicted span under the M2 overlap matcher of `ner_eval.py`, queried by
+their gold surface form. The restricted ("oracle") candidates are the recognised gold of
+train and test. One CUI rule applies to every language: a valid CUI is linkable; empty,
+`null`, `CUI-less` and `C0000000` become `C0000000` (not linkable); malformed values are
+dropped from queries and candidates, and the script reports how many.
+
+```bash
+python evaluation/build_bel_queries.py \
+    --test  data/SC_test_loc_english_annot.csv  data/SC_test_eng.csv  data/SC_test_loc_english_zero_shot.csv \
+    --train data/SC_train_loc_english_annot.csv data/SC_train_eng.csv data/SC_train_loc_english_zero_shot.csv \
+    --doc_ids data/doc_ids_131.txt \
+    --out_queries data/bel/SC_test_loc_english_common_entities.csv \
+    --out_oracle  data/bel/SC_oracle_loc_english_entities.csv
+```
+
+On the 131 test notes this gives 3,680 (English), 4,320 (Dutch) and 4,549 (Italian) queries,
+the query sets of the paper. Do not use `src/06_bel_extract_common.py` from the original
+pipeline for this: it pairs CUIs and spans with `zip()` over two different regexes, which
+misaligns them after any marker without a `C\d+` CUI (all Dutch CUI-less mentions).
+
+### Running the evaluation
+
 ```bash
 python evaluation/bel_eval.py \
     --queries      data/bel/SC_test_loc_english_common_entities.csv \
-    --oracle_train data/bel/SC_train_loc_english_common_entities.csv \
+    --oracle_train data/bel/SC_oracle_loc_english_entities.csv \
     --umls         data/umls_english.csv \
     --model        cambridgeltl/SapBERT-UMLS-2020AB-all-lang-from-XLMR \
     --cache_dir    embedding_cache \
