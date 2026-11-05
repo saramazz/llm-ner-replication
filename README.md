@@ -195,7 +195,17 @@ python evaluation/bel_eval.py \
 (multilingual, XLM-R based). The original SapBERT
 (`SapBERT-from-PubMedBERT-fulltext`) has a case-sensitivity issue: it maps Title-case
 clinical terms to `[UNK]`, producing near-identical embeddings for single-word entities.
-All entity texts are lowercased before encoding to guard against this in any cased model.
+With the default `--encoding lower_cls`, entity texts are lowercased and encoded with CLS
+pooling (the setting used for multilingual SapBERT in the paper). The paper's other two
+encoders were run with sentence-transformers mean pooling on the original text; reproduce
+them with `--encoding st`:
+
+```bash
+python evaluation/bel_eval.py ... --model sentence-transformers/all-MiniLM-L6-v2 --encoding st
+python evaluation/bel_eval.py ... --model dmis-lab/biobert-v1.1 --encoding st
+```
+
+Embeddings are cached per model and encoding under `--cache_dir`.
 
 ---
 

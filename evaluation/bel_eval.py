@@ -82,9 +82,12 @@ def encode(
     texts:      list[str],
     model_name: str,
     cache_path: Path,
+    encoding:   str = "lower_cls",
 ) -> np.ndarray | str:
     """
-    Encode texts: lowercase → tokenise → CLS pool → L2-normalise.
+    Encode texts. encoding="lower_cls" (multilingual SapBERT in the paper): lowercase →
+    tokenise → CLS pool → L2-normalise. encoding="st" (all-MiniLM-L6-v2 and BioBERT in the
+    paper): sentence-transformers encode (mean pooling), normalised, original case.
 
     Results are cached as .npy files. For large candidate sets (≥50k),
     a float16 memory-mapped file is written and the path is returned as a
@@ -97,6 +100,16 @@ def encode(
             return str(cache_path)
         arr = np.load(str(cache_path))
         return arr.astype(np.float32) if arr.dtype == np.float16 else arr
+
+    if encoding == "st":
+        from sentence_transformers import SentenceTransformer
+        st = SentenceTransformer(model_name, device="cuda" if _has_cuda() else "cpu")
+        log.info("  Encoding %d texts (%s, sentence-transformers)", len(texts), model_name)
+        embs = st.encode(texts, batch_size=256, normalize_embeddings=True,
+                         convert_to_numpy=True, show_progress_bar=False).astype(np.float32)
+        del st; gc.collect()
+        np.save(str(cache_path), embs)
+        return embs
 
     import torch
     from transformers import AutoModel, AutoTokenizer
@@ -295,13 +308,16 @@ def main():
     ap.add_argument("--model",
                     default="cambridgeltl/SapBERT-UMLS-2020AB-all-lang-from-XLMR",
                     help="HuggingFace model name for encoding")
+    ap.add_argument("--encoding",      default="lower_cls", choices=["lower_cls", "st"],
+                    help="lower_cls: multilingual SapBERT (paper); st: sentence-transformers, "
+                         "for all-MiniLM-L6-v2 and BioBERT (paper)")
     ap.add_argument("--cache_dir",     default="embedding_cache",
                     help="Directory for embedding cache files")
     ap.add_argument("--out",           default="bel_results.json")
     args = ap.parse_args()
 
-    cache_dir = Path(args.cache_dir)
-    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_dir = Path(args.cache_dir) / f"{args.model.replace('/', '__')}__{args.encoding}"
+    cache_dir.mkdir(parents=True, exist_ok=True)   # one cache per model and encoding
 
     # Load data
     test_df  = pd.read_csv(args.queries,      dtype=str).fillna("")
@@ -319,7 +335,7 @@ def main():
 
     # Encode queries
     q_embs = encode(query_texts, args.model,
-                    cache_dir / f"bel_q_{Path(args.queries).stem}.npy")
+                    cache_dir / f"bel_q_{Path(args.queries).stem}.npy", args.encoding)
 
     # Oracle: candidates from train + test gold texts
     oracle_df = (
@@ -329,7 +345,7 @@ def main():
         .drop_duplicates("entity_text")
     )
     c_oracle = encode(oracle_df["entity_text"].tolist(), args.model,
-                      cache_dir / "bel_c_oracle.npy")
+                      cache_dir / f"bel_c_oracle_{Path(args.queries).stem}.npy", args.encoding)
     pred_oracle  = retrieve(q_embs, c_oracle, oracle_df["CUI"].tolist())
     m_oracle_all = bel_metrics(gold_cuis, pred_oracle, linkable_only=False)
     m_oracle_lnk = bel_metrics(gold_cuis, pred_oracle, linkable_only=True)
@@ -337,7 +353,7 @@ def main():
 
     # Realistic: candidates from UMLS
     c_real = encode(umls_df["entity_text"].tolist(), args.model,
-                    cache_dir / "bel_c_realistic.npy")
+                    cache_dir / f"bel_c_realistic_{Path(args.umls).stem}.npy", args.encoding)
     pred_real    = retrieve(q_embs, c_real, umls_df["CUI"].tolist())
     m_real_all   = bel_metrics(gold_cuis, pred_real, linkable_only=False)
     m_real_lnk   = bel_metrics(gold_cuis, pred_real, linkable_only=True)
