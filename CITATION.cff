@@ -1,9 +1,7 @@
 cff-version: 1.2.0
-message: "If you use this code, please cite the paper below."
-type: article
-title: >-
-  Advancements in Multilingual Biomedical Natural Language Processing:
-  Exploring Large Language Models for Named Entity Recognition and Linking
+message: "If you use this code, please cite the paper in preferred-citation."
+type: software
+title: "llm-ner-replication: code for multilingual LLM-based clinical NER with embedding-based entity linking"
 authors:
   - family-names: Mazzucato
     given-names: Sara
@@ -18,8 +16,33 @@ authors:
     given-names: Andrea
   - family-names: van Mulligen
     given-names: Erik M.
-year: 2026
-journal: "Journal of the American Medical Informatics Association Open"
-notes: "Manuscript under review"
 repository-code: "https://github.com/saramazz/llm-ner-replication"
 license: MIT
+keywords:
+  - clinical NLP
+  - named entity recognition
+  - entity linking
+  - large language models
+  - UMLS
+preferred-citation:
+  type: article
+  title: >-
+    Advancements in Multilingual Biomedical Natural Language Processing:
+    Exploring Large Language Models for Named Entity Recognition, with
+    Embedding-Based Entity Linking
+  authors:
+    - family-names: Mazzucato
+      given-names: Sara
+    - family-names: Seinen
+      given-names: Tom M.
+    - family-names: Moccia
+      given-names: Sara
+    - family-names: Micera
+      given-names: Silvestro
+    - family-names: Bandini
+      given-names: Andrea
+    - family-names: van Mulligen
+      given-names: Erik M.
+  journal: "Journal of Biomedical Semantics"
+  year: 2026
+  notes: "Manuscript under review"

@@ -243,12 +243,11 @@ Run from the repository root, with the PhysioNet release placed under
 |---|---|---|
 | 1 | `1_SC_{train,test}_standardize.R` | reads notes and annotations into tables |
 | 3 | `3_SC_{train,test}_MakeInTextAnnotations.R` | wraps each gold mention in `[[span][CUI]]` by script (CUI-less: `[C0000000]`) |
-| 4 | `4_SC_test_train_translate_GPT.R` | translates each note through the OpenAI API (Italian: `gpt-4o-mini`) |
+| 4 | `4_SC_test_train_translate_GPT.R` | translates each note through the OpenAI API (`gpt-4o-mini`, Dutch and Italian) |
 | 5 | `5_SC_{train,test}_ProcessTranslationToCorpus.R` | extracts the markers with a regular expression and writes the translated corpus and gold |
 
-Shared functions are in `Extr_Val_R/R/Tool_functions.R`. The Dutch corpus is the GPT-4 Turbo
-(`gpt-4-0125-preview`) translation of Seinen et al. (JAMIA 2024), produced with the same
-protocol. As in that work, the translated ShARe/CLEF corpora cannot be made publicly
+Shared functions are in `Extr_Val_R/R/Tool_functions.R`. The protocol follows Seinen et al.
+(JAMIA 2024). As in that work, the translated ShARe/CLEF corpora cannot be made publicly
 available because of the PhysioNet data use agreement.
 
 > **Data use.** Steps 4 and the GPT-4o annotation send note text to the OpenAI API.
